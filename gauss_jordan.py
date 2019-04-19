@@ -10,15 +10,17 @@ def gauss(A, b):
     Ab = np.concatenate((A, b), axis=1)
     print(Ab)
     n = len(A)
-    for i in range(n-1):
-        for j in range(i+1, n):
-            Ab[j,i:] = Ab[j,i:] - Ab[j,i] * Ab[i,i:] / Ab[i,i]
-    print(Ab)
-    X = np.zeros((n, 1))
-    X[n-1] = Ab[n-1, n] / Ab[n-1, n-1]
-    for i in range(n-2, -1, -1):
-        X[i] = (Ab[i,-1] - Ab[i,i+1:n].dot(X[i+1:n])) / Ab[i,i]
-    return X
+    for i in range(n):
+        idx_max = np.argmax(np.abs(Ab[i:,i]))
+        Ab[[i,i+idx_max]] = Ab[[i+idx_max,i]]
+        Ab[i,:] = Ab[i,:] / Ab[i,i]
+        for j in range(n):
+            if j == i:
+                continue
+            Ab[j, i+1:] = Ab[j,i+1:] - Ab[j,i] * Ab[i,i+1:]
+            Ab[j,i] = 0
+        print(Ab)
+    return Ab[:,-1]
 
 X = gauss(A, b)
 n = len(X)
