@@ -6,7 +6,7 @@ def tim_nghiem(f, x, a, b, eps=1e-8, N=1000): #gia su ham f tren (a,b) la loi ho
     deriv = Derivative(f, x).doit()
     deriv_a = deriv.subs({x:a})
     deriv_b = deriv.subs({x:b})
-    min_deriv = min([deriv_a, deriv_b])
+    m = min([deriv_a, deriv_b])
     
     x1 = f.subs({x:a}) - f.subs({x:a}) / deriv_a
     if x1 > a and x1 < b:
@@ -14,7 +14,7 @@ def tim_nghiem(f, x, a, b, eps=1e-8, N=1000): #gia su ham f tren (a,b) la loi ho
     else:
         x0 = b
     x_n = x0
-    while math.fabs(f.subs({x:x_n})) / min_deriv > eps:
+    while math.fabs(f.subs({x:x_n})) / m > eps:
         x_n = x_n - f.subs({x:x_n}) / deriv.subs({x:x_n})
         iter += 1
         print('iter = {}: x_n = {}'.format(iter, x_n))
