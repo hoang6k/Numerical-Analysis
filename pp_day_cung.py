@@ -9,17 +9,24 @@ def tim_nghiem(f, x, a, b, eps=1e-8, N=1000):
     m = min([deriv_a, deriv_b])
     M= max([deriv_a, deriv_b])
     nd_deriv = Derivative(deriv, x).doit()
+    nd_deriv_a = nd_deriv.subs({x:a})
+    nd_deriv_b = nd_deriv.subs({x:b})
     
-    if f.subs({x:a}) * nd_deriv.subs({x:a}) > 0:
-        x0 = b
-        d = a
-    else:
+    #kiem tra dieu kien
+    if deriv_a*deriv_b < 0 or nd_deriv_a*nd_deriv_b< 0:
+        return float('NaN'), 0
+    
+    #tim xap xi ban dau x0 va d
+    if f.subs({x:a}) * nd_deriv.subs({x:a}) < 0:
         x0 = a
         d = b
-    
+    else:
+        x0 = b
+        d = a
     x_n_1 = x0
     x_n = x_n_1 - (d-x_n_1) / (f.subs({x:d}) - f.subs({x:x_n_1})) * f.subs({x:x_n_1})
-    while (M-m)/m * math.fabs(x_n - x_n_1) > eps:
+    print('iter = {}: x_n = {}'.format(iter, x_n))
+    while math.fabs(x_n - x_n_1) > m*eps/(M - m):
         x_n_1 = x_n
         x_n = x_n - (d-x_n) / (f.subs({x:d}) - f.subs({x:x_n})) * f.subs({x:x_n})
         iter += 1
