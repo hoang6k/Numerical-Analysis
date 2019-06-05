@@ -1,20 +1,14 @@
 import cmath
 import numpy as np
 
-A = [[1, 3, -2, 0, -2],
-     [3, 4, -5, 1, -3],
-     [-2, -5, 3, -2, 2],
-     [0, 1, -2, 5, 3],
-     [-2, -3, 2, 3, 4]]
+A = [[1., 3., -2., 0., -2.],
+     [3., 4., -5., 1., -3.],
+     [-2., -5., 3., -2., 2.],
+     [0., 1., -2., 5., 3.],
+     [-2., -3., 2., 3., 4.]]
 b = [[0.5], [5.4], [5.0], [7.5], [3.3]]
 
-#A = [[10, 2, -1, 2],
-#     [1, 5, 1, 0],
-#     [1, -2, -5, 1],
-#     [3, 0, 0, -9]]
-#b = [[-4], [-1], [2], [10]]
-
-def cholesky(A):
+def cholesky_dec(A):
     n = len(A)
     A = np.asarray(A)
     U = np.zeros((n,n), dtype=complex)
@@ -41,7 +35,7 @@ def upper_tri(U, y):
         x[i,0] = (y[i,0] - np.sum(U[i,i+1:]*x[i+1:,0])) / U[i,i]
     return x
 
-U, L = cholesky(A)
+U, L = cholesky_dec(A)
 y = lower_tri(L, b)
 x = upper_tri(U, y)
 x = np.asarray(x, dtype=float)

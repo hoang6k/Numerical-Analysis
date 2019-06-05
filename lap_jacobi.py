@@ -1,10 +1,10 @@
 import numpy as np
 
-A = [[10, 2, -1, 2],
-     [1, 5, 1, 0],
-     [1, -2, -5, 1],
-     [3, 0, 0, -9]]
-b = [[-4], [-1], [2], [10]]
+A = [[10., 2., -1., 2.],
+     [1., 5., 1., 0.],
+     [1., -2., -5., 1.],
+     [3., 0., 0., -9.]]
+b = [[-4.], [-1.], [2.], [10.]]
 
 def cheo_troi_hang(A, b, eps):
     n = len(A)
@@ -23,8 +23,8 @@ def cheo_troi_hang(A, b, eps):
     x = [x0, x1]
     
     # tinh chuan ma tran va so vong lap
-    q = np.around(np.linalg.norm(alpha), decimals=6) + 0.00001
-    k = np.around(np.log((1-q)*eps / np.linalg.norm(x1-x0)) / np.log(q)) + 1
+    q = np.around(np.linalg.norm(alpha, ord=float('inf')), decimals=6) + 0.00001
+    k = np.around(np.log((1-q)*eps / np.linalg.norm(x1-x0, ord=float('inf'))) / np.log(q)) + 1
     print('norm = ' + str(q))
     print('k = ' + str(int(k)))
     
@@ -41,6 +41,8 @@ def cheo_troi_cot(A, b, eps):
     
     # luu lai mang doi bien
     a_ii = np.asarray([A[i,i] for i in range(n)]).reshape((n,1))
+    _a_ii = np.abs(a_ii)
+    _lambda = np.max(_a_ii) / np.min(_a_ii)
     for i in range(n):
         A[:,i] = A[:,i] / A[i,i]
     alpha = I - A
@@ -52,8 +54,8 @@ def cheo_troi_cot(A, b, eps):
     x = [x0, x1]
     
     # tinh chuan ma tran va so vong lap
-    q = np.around(np.linalg.norm(alpha), decimals=6) + 0.00001
-    k = np.around(np.log((1-q)*eps / np.linalg.norm(x1-x0)) / np.log(q)) + 1
+    q = np.around(np.linalg.norm(alpha, ord=1), decimals=6) + 0.00001
+    k = np.around(np.log((1-q)*eps / (_lambda * np.linalg.norm(x1-x0, ord=1))) / np.log(q)) + 1
     print('norm = ' + str(q))
     print('k = ' + str(int(k)))
     
@@ -62,7 +64,7 @@ def cheo_troi_cot(A, b, eps):
         x.append(alpha.dot(x[-1]) + beta)
     return x[-1] / a_ii
 
-eps = 1e-4
+eps = 1e-8
 
 X = cheo_troi_hang(A, b, eps)
 n = len(X)
